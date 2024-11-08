@@ -1,0 +1,64 @@
+services:
+  web:
+    image: 'php:8.1-apache'
+    container_name: wtproj-web
+    volumes:
+      - './src:/var/www/html'
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root #enter db user
+      - MYSQL_PASSWORD=root_pass #enter db password
+      - MYSQL_DATABASE=complaint_system # db name
+    depends_on:
+      - db
+    command: '/bin/bash -c "chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html && docker-php-ext-install mysqli && apache2-foreground"'
+    healthcheck: #healthcheck to verify container uptime
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+  db:
+    image: 'mysql:8.0'
+    container_name: mysql-db
+    #platform: linux/arm64 # uncomment this if you are running on an ARM server
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_pass # db root password
+      - MYSQL_DATABASE=complaint_system #db name
+    volumes:
+      - 'db_data:/var/lib/mysql'
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-h'
+        - localhost
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+  phpmyadmin:
+    image: arm64v8/phpmyadmin
+    container_name: wtproj-phpmyadmin
+    environment:
+      - PMA_HOST=db
+      - MYSQL_ROOT_PASSWORD=root_pass
+    depends_on:
+      - db
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - '-f'
+        - 'http://localhost'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+volumes:
+  db_data: # persistent volume for DB data
