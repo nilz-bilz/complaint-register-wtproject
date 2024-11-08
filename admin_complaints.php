@@ -1,4 +1,3 @@
-<!-- admin_complaints.php -->
 <?php
 session_start();
 

@@ -1,4 +1,3 @@
-<!-- user_register.php -->
 <?php
 session_start();
 
