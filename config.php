@@ -1,8 +1,7 @@
-<!-- config.php -->
 <?php
-$servername = "127.0.0.1:3306";
+$servername = "db"; //replace with ip:port or docker service name
 $username = "root"; //enter DB user
-$password = ""; // enter DB password
+$password = "root_pass"; // enter DB password
 $dbname = "complaint_system";
 
 $conn = mysqli_connect($servername, $username, $password, $dbname);
